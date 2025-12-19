@@ -8,7 +8,7 @@ const menuItems = [
 		path: "/dashboard/main",
 		icon: <IoBrowsersOutline size={40} />,
 		title: "Dashboard",
-		subTitle: "Manage your actions and activities",
+		subTitle: "Admin Page",
 	},
 	{
 		path: "/dashboard/counter",
@@ -23,7 +23,7 @@ export const Sidebar = () => {
 		<div
 			id="menu"
 			style={{ width: "20rem" }}
-			className="bg-gray-900 min-h-screen z-10 text-slate-300 w-64 fixed left-0 h-screen overflow-y-scroll"
+			className="bg-gray-900 min-h-screen z-10 text-slate-300 w-64 left-0 h-screen"
 		>
 			<div id="logo" className="my-4 px-6">
 				<h1 className="text-lg md:text-2xl font-bold text-white">
