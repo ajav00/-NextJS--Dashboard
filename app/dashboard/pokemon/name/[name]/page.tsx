@@ -1,28 +1,31 @@
-import { Pokemon } from "@/app/pokemons";
+import { Pokemon, PokemonResponse } from "@/app/pokemons";
 import { Metadata } from "next";
 import Image from 'next/image';
 import { notFound } from "next/navigation";
 
 
 interface Props {
-  params: { id: string };
+  params: { name: string };
 }
 
 export async function generateStaticParams() {
-  return Array.from({ length: 151 }, (_, i) => ({
-    id: (i + 1).toString(),
+
+  const data: PokemonResponse = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151').then( resp => resp.json() );  
+
+  return data.results.map( pokemon => ({
+    name: pokemon.name
   }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
+  const { name } = await params;
 
   try {
-    const { name } = await getPokemon(id);
+    const pokemon = await getPokemon(name);
 
     return {
-      title: `#${id} - ${name}`,
-      description: `Página del pokémon ${name}`,
+      title: `#${pokemon.id} - ${pokemon.name}`,
+      description: `Página del pokémon ${pokemon.name}`,
     };
   } catch {
     return {
@@ -32,11 +35,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-const getPokemon = async(id: string): Promise<Pokemon> => {
+const getPokemon = async(name: string): Promise<Pokemon> => {
 
 
   try {
-    const pokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${ id }`,{
+    const pokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${ name }`,{
       // cache: 'force-cache'// TODO: cambiar esto en un futuro
       next: {
         revalidate: 60 * 60 * 30 * 6
@@ -56,10 +59,10 @@ const getPokemon = async(id: string): Promise<Pokemon> => {
 
 
 
-export default async function PokemonPage({ params }: Props) {
-  const { id } = await params;
+export default async function PokemonPageName({ params }: Props) {
+  const { name } = await params;
 
-  const pokemon = await getPokemon(id);
+  const pokemon = await getPokemon(name);
 
 
   return (
